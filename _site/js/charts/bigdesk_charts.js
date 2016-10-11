@@ -50,9 +50,19 @@ bigdesk_charts.fileDescriptors = {
             return {
                 timestamp: +snapshot.node.process.timestamp,
                 value: +snapshot.node.process.open_file_descriptors
-            }
+        }
         })
-    }
+    },
+
+  series2: function(stats) {
+    return stats.map(function(snapshot){
+      return {
+        timestamp: +snapshot.node.process.timestamp,
+        value: +snapshot.node.process.max_file_descriptors
+      }
+    })
+  }
+
 };
 
 bigdesk_charts.channels = {
@@ -412,14 +422,15 @@ bigdesk_charts.threadpoolRefresh = {
 }
 
 bigdesk_charts.osCpu = {
-
     chart: function(element) {
         return timeAreaChart()
             .width(bigdesk_charts.default.width).height(bigdesk_charts.default.height)
             .legend({
                 caption: "CPU (%)",
-                series1: "Sys",
-                series2: "User",
+              // TODO@seaasun 可能出现问题
+                series1: "Used",
+                // series1: "Sys",
+                series2: "Free",
                 margin_left: 5,
                 margin_bottom: 6,
                 width: 55})
@@ -430,21 +441,22 @@ bigdesk_charts.osCpu = {
         return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.os.timestamp,
-                value: +snapshot.node.os.cpu.sys
+                // value: +snapshot.node.os.cpu.sys
+                value: +snapshot.node.os.cpu_percent
             }
         })
     },
+
+    // series2: function(stats) {
+    //     return stats.map(function(snapshot){
+    //         return {
+    //             timestamp: +snapshot.node.os.timestamp,
+    //             value: (+snapshot.node.os.cpu.user + +snapshot.node.os.cpu.sys)
+    //         }
+    //     })
+    // },
 
     series2: function(stats) {
-        return stats.map(function(snapshot){
-            return {
-                timestamp: +snapshot.node.os.timestamp,
-                value: (+snapshot.node.os.cpu.user + +snapshot.node.os.cpu.sys)
-            }
-        })
-    },
-
-    series3: function(stats) {
         return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.os.timestamp,
@@ -473,7 +485,7 @@ bigdesk_charts.osMem = {
         return  stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.os.timestamp,
-                value: +snapshot.node.os.mem.actual_used_in_bytes
+                value: +snapshot.node.os.mem.used_in_bytes
             }
         })
     },
@@ -482,7 +494,7 @@ bigdesk_charts.osMem = {
         return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.os.timestamp,
-                value: ((+snapshot.node.os.mem.actual_free_in_bytes) + (+snapshot.node.os.mem.actual_used_in_bytes))
+                value: ((+snapshot.node.os.mem.free_in_bytes) + (+snapshot.node.os.mem.used_in_bytes))
             }
         })
     }
@@ -535,9 +547,7 @@ bigdesk_charts.osLoadAvg = {
             .width(bigdesk_charts.default.width).height(bigdesk_charts.default.height)
             .legend({
                 caption: "Load Average",
-                series1: "0",
-                series2: "1",
-                series3: "2",
+                series1: "Used",
                 margin_left: 5,
                 margin_bottom: 6,
                 width: 40})
@@ -548,28 +558,28 @@ bigdesk_charts.osLoadAvg = {
         return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.os.timestamp,
-                value: + snapshot.node.os.load_average["0"]
-            }
-        })
-    },
-
-    series2: function(stats) {
-        return stats.map(function(snapshot){
-            return {
-                timestamp: +snapshot.node.os.timestamp,
-                value: + snapshot.node.os.load_average["1"]
-            }
-        })
-    },
-
-    series3: function(stats) {
-        return stats.map(function(snapshot){
-            return {
-                timestamp: +snapshot.node.os.timestamp,
-                value: + snapshot.node.os.load_average["2"]
+                value: + snapshot.node.os.load_average
             }
         })
     }
+
+    // series2: function(stats) {
+    //     return stats.map(function(snapshot){
+    //         return {
+    //             timestamp: +snapshot.node.os.timestamp,
+    //             value: + snapshot.node.os.load_average["1"]
+    //         }
+    //     })
+    // },
+    //
+    // series3: function(stats) {
+    //     return stats.map(function(snapshot){
+    //         return {
+    //             timestamp: +snapshot.node.os.timestamp,
+    //             value: + snapshot.node.os.load_average["2"]
+    //         }
+    //     })
+    // }
 };
 
 bigdesk_charts.indicesSearchReqs = {
@@ -802,8 +812,8 @@ bigdesk_charts.indicesCacheSize = {
             .legend({
                 caption: "Cache size",
                 series1: "Field",
-                series2: "Filter",
-                series3: "ID",
+                series2: "Query",
+                series3: "Request",
                 margin_left: 5,
                 margin_bottom: 6,
                 width: 65
@@ -824,7 +834,7 @@ bigdesk_charts.indicesCacheSize = {
         return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.id,
-                value: +snapshot.node.indices.filter_cache.memory_size_in_bytes
+                value: +snapshot.node.indices.query_cache.memory_size_in_bytes
             }
         })
     },
@@ -833,7 +843,7 @@ bigdesk_charts.indicesCacheSize = {
 		return stats.map(function(snapshot){
 			return {
 				timestamp: +snapshot.id,
-				value: +snapshot.node.indices.id_cache.memory_size_in_bytes
+				value: +snapshot.node.indices.request_cache.memory_size_in_bytes
 			}
 		})
 	}
@@ -846,7 +856,7 @@ bigdesk_charts.indicesCacheEvictions = {
             .legend({
                 caption: "Cache evictions (Δ)",
                 series1: "Field",
-                series2: "Filter",
+                series2: "Query",
                 margin_left: 5,
                 margin_bottom: 6,
                 width: 65
@@ -867,7 +877,7 @@ bigdesk_charts.indicesCacheEvictions = {
         return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.id,
-                value: +snapshot.node.indices.filter_cache.evictions
+                value: +snapshot.node.indices.query_cache.evictions
             }
         })
     }
@@ -880,8 +890,9 @@ bigdesk_charts.processCPU_time = {
             .width(bigdesk_charts.default.width).height(bigdesk_charts.default.height)
             .legend({
                 caption: "CPU time (Δ)",
-                series1: "User",
-                series2: "Sys",
+                series1: "Used",
+                //series1: "User",
+                //series2: "Sys",
                 margin_left: 5,
                 margin_bottom: 6,
                 width: 45})
@@ -892,30 +903,33 @@ bigdesk_charts.processCPU_time = {
         return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.process.timestamp,
-                value: +snapshot.node.process.cpu.user_in_millis
+                value: +snapshot.node.process.cpu.total_in_millis
             }
         })
     },
 
-    series2: function(stats) {
-        return stats.map(function(snapshot){
-            return {
-                timestamp: +snapshot.node.process.timestamp,
-                value: +snapshot.node.process.cpu.sys_in_millis
-            }
-        })
-    }
+    // series2: function(stats) {
+    //     return stats.map(function(snapshot){
+    //         return {
+    //             timestamp: +snapshot.node.process.timestamp,
+    //             value: +snapshot.node.process.cpu.sys_in_millis
+    //         }
+    //     })
+    // }
 };
 
 bigdesk_charts.processCPU_pct = {
 
-    chart: function(element, series2_label) {
+  // TODO @seaasun 不理解seris2——label
+    chart: function(element) {
+    //chart: function(element, series2_label) {
         return timeAreaChart()
             .width(bigdesk_charts.default.width).height(bigdesk_charts.default.height)
             .legend({
                 caption: "CPU (%)",
                 series1: "process",
-                series2: series2_label,
+                series2: "total",
+                //series2: series2_label,
                 margin_left: 5,
                 margin_bottom: 6,
                 width: 65})
@@ -929,6 +943,15 @@ bigdesk_charts.processCPU_pct = {
                 value: +snapshot.node.process.cpu.percent
             }
         })
+    },
+    series2: function(stats) {
+      return stats.map(function(snapshot){
+        return {
+          timestamp: +snapshot.node.process.timestamp,
+          value: 100
+          //value: +snapshot.node.process.cpu.total.substring(0,snapshot.node.process.cpu.total.length-1)
+        }
+      })
     }
 
 };
@@ -940,9 +963,10 @@ bigdesk_charts.processMem = {
             .width(bigdesk_charts.default.width).height(bigdesk_charts.default.height)
             .legend({
                 caption: "Mem",
-                series1: "share",
-                series2: "resident",
-                series3: "total virtual",
+                // series1: "share",
+                // series2: "resident",
+                // series3: "total virtual",
+                series1: "total virtual",
                 margin_left: 5,
                 margin_bottom: 6,
                 width: 100})
@@ -953,28 +977,28 @@ bigdesk_charts.processMem = {
         return stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.process.timestamp,
-                value: +snapshot.node.process.mem.share_in_bytes
-            }
-        })
-    },
-
-    series2: function(stats) {
-        return stats.map(function(snapshot){
-            return {
-                timestamp: +snapshot.node.process.timestamp,
-                value: +snapshot.node.process.mem.resident_in_bytes
-            }
-        })
-    },
-
-    series3: function(stats) {
-        return stats.map(function(snapshot){
-            return {
-                timestamp: +snapshot.node.process.timestamp,
                 value: +snapshot.node.process.mem.total_virtual_in_bytes
             }
         })
     }
+
+    // series2: function(stats) {
+    //     return stats.map(function(snapshot){
+    //         return {
+    //             timestamp: +snapshot.node.process.timestamp,
+    //             value: +snapshot.node.process.mem.resident_in_bytes
+    //         }
+    //     })
+    // },
+    //
+    // series3: function(stats) {
+    //     return stats.map(function(snapshot){
+    //         return {
+    //             timestamp: +snapshot.node.process.timestamp,
+    //             value: +snapshot.node.process.mem.total_virtual_in_bytes
+    //         }
+    //     })
+    // }
 };
 
 bigdesk_charts.transport_txrx = {
@@ -1017,9 +1041,9 @@ bigdesk_charts.disk_reads_writes_cnt = {
         return timeSeriesChart()
             .width(bigdesk_charts.default.width).height(bigdesk_charts.default.height)
             .legend({
-                caption: "# of Reads & Writes (Δ)",
-                series1: "Reads",
-                series2: "Writes",
+                caption: "#total , arvailable ",
+                series1: "arvailable",
+                series2: "total",
                 margin_left: 5,
                 margin_bottom: 6,
                 width: 70})
@@ -1030,7 +1054,7 @@ bigdesk_charts.disk_reads_writes_cnt = {
         return  stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.fs.timestamp,
-                value: +snapshot.node.fs.data[fs_key].disk_reads
+                value: +snapshot.node.fs.data[fs_key].available_in_bytes
             }
         })
     },
@@ -1039,11 +1063,46 @@ bigdesk_charts.disk_reads_writes_cnt = {
         return  stats.map(function(snapshot){
             return {
                 timestamp: +snapshot.node.fs.timestamp,
-                value: +snapshot.node.fs.data[fs_key].disk_writes
+                value: +snapshot.node.fs.data[fs_key].total_in_bytes
             }
         })
     }
 };
+
+//TODO @seaasun 这里改洞大
+// bigdesk_charts.disk_reads_writes_cnt = {
+//
+//     chart: function(element) {
+//         return timeSeriesChart()
+//             .width(bigdesk_charts.default.width).height(bigdesk_charts.default.height)
+//             .legend({
+//                 caption: "# of Reads & Writes (Δ)",
+//                 series1: "Reads",
+//                 series2: "Writes",
+//                 margin_left: 5,
+//                 margin_bottom: 6,
+//                 width: 70})
+//             .svg(element);
+//     },
+//
+//     series1: function(stats, fs_key) {
+//         return  stats.map(function(snapshot){
+//             return {
+//                 timestamp: +snapshot.node.fs.timestamp,
+//                 value: +snapshot.node.fs.data[fs_key].disk_reads
+//             }
+//         })
+//     },
+//
+//     series2: function(stats, fs_key) {
+//         return  stats.map(function(snapshot){
+//             return {
+//                 timestamp: +snapshot.node.fs.timestamp,
+//                 value: +snapshot.node.fs.data[fs_key].disk_writes
+//             }
+//         })
+//     }
+// };
 
 bigdesk_charts.disk_reads_writes_size = {
 

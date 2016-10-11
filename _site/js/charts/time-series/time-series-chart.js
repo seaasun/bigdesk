@@ -93,9 +93,11 @@ function timeSeriesChart() {
             .attr("clip-path", "url(#"+clip_id+")")
             .append("path");
 
-        path2 = svg.append("g")
-            .attr("clip-path", "url(#"+clip_id+")")
-            .append("path");
+        if(data2){
+            path2 = svg.append("g")
+                .attr("clip-path", "url(#"+clip_id+")")
+                .append("path");
+        }
 
         if (data3) {
             path3 = svg.append("g")
@@ -140,19 +142,23 @@ function timeSeriesChart() {
             .attr("font-family", "Verdana")
             .attr("transform","translate("+20+","+(legendSize.height - 5)+")");
 
-        legend2.attr("font-size", 10)
-            .attr("font-family", "Verdana")
-            .attr("transform","translate("+20+","+(legendSize.height - 5 - 14)+")");
-
         legendSvg.append("circle")
-            .attr("r", 3)
-            .attr("class", "legend_circle_line1")
-            .attr("transform","translate("+10+","+(legendSize.height - 8)+")");
+          .attr("r", 3)
+          .attr("class", "legend_circle_line1")
+          .attr("transform","translate("+10+","+(legendSize.height - 8)+")");
 
-        legendSvg.append("circle")
-            .attr("r", 3)
-            .attr("class", "legend_circle_line2")
-            .attr("transform","translate("+10+","+(legendSize.height - 8 - 14)+")");
+        if (data2) {
+
+            legend2.attr("font-size", 10)
+              .attr("font-family", "Verdana")
+              .attr("transform","translate("+20+","+(legendSize.height - 5 - 14)+")");
+
+            legendSvg.append("circle")
+              .attr("r", 3)
+              .attr("class", "legend_circle_line2")
+              .attr("transform","translate("+10+","+(legendSize.height - 8 - 14)+")");
+        }
+
 
         if (data3) {
 
@@ -180,8 +186,8 @@ function timeSeriesChart() {
 
     };
 
-    // data1 and data2 are mandatory
-    // data3 is optional
+    // data1 is mandatory
+    // data3 and data2 are optional
     chart.update = function(data1, data2, data3) {
 
         if (!initialized) init(data1, data2, data3);
@@ -189,18 +195,21 @@ function timeSeriesChart() {
         var circles1 = circlesContainer.selectAll("circle.circle_line1")
             .data(data1, function(d){return d.timestamp});
 
-        var circles2 = circlesContainer.selectAll("circle.circle_line2")
-            .data(data2, function(d){return d.timestamp});
-
         circles1.enter()
             .append("circle")
             .attr("class","circle_line1")
             .attr("r", 1.5);
 
-        circles2.enter()
-            .append("circle")
-            .attr("class","circle_line2")
-            .attr("r", 1.5);
+        var circles2 = undefined;
+        if (data2) {
+            circles2 = circlesContainer.selectAll("circle.circle_line2")
+              .data(data2, function(d){return d.timestamp});
+
+            circles2.enter()
+                .append("circle")
+                .attr("class","circle_line2")
+                .attr("r", 1.5);
+            }
 
         var circles3 = undefined;
 
@@ -219,7 +228,7 @@ function timeSeriesChart() {
         value_scale.domain([0,
             d3.max([
                 d3.max(data1, function(d){return d.value}),
-                d3.max(data2, function(d){return d.value}),
+                d3.max(data2 ? data2: [], function(d){return d.value}),
                 d3.max(data3 ? data3 : [], function(d){return d.value})
             ])
         ]).nice();
@@ -241,8 +250,7 @@ function timeSeriesChart() {
         circles1.attr("cx", function(d){return time_scale(new Date(d.timestamp))})
             .attr("cy", function(d){return value_scale(d.value)});
 
-        circles2.attr("cx", function(d){return time_scale(new Date(d.timestamp))})
-            .attr("cy", function(d){return value_scale(d.value)});
+
 
         if (animate) {
             circles1
@@ -255,24 +263,33 @@ function timeSeriesChart() {
                 .attr("cy", function(d){return value_scale(d.value)});
         }
 
-        if (animate) {
-            circles2
-                .transition().duration(250).ease("linear")
-                .attr("cx", function(d){return time_scale(new Date(d.timestamp))})
-                .attr("cy", function(d){return value_scale(d.value)});
-        } else {
-            circles2
-                .attr("cx", function(d){return time_scale(new Date(d.timestamp))})
-                .attr("cy", function(d){return value_scale(d.value)});
-        }
+
 
         path1.data(data1)
             .attr("class", "line1")
             .attr("d", line(data1));
 
-        path2.data(data2)
-            .attr("class", "line2")
-            .attr("d", line(data2));
+        if(data2){
+
+            circles2.attr("cx", function(d){return time_scale(new Date(d.timestamp))})
+              .attr("cy", function(d){return value_scale(d.value)});
+
+            if (animate) {
+                circles2
+                  .transition().duration(250).ease("linear")
+                  .attr("cx", function(d){return time_scale(new Date(d.timestamp))})
+                  .attr("cy", function(d){return value_scale(d.value)});
+            } else {
+                circles2
+                  .attr("cx", function(d){return time_scale(new Date(d.timestamp))})
+                  .attr("cy", function(d){return value_scale(d.value)});
+            }
+            path2.data(data2)
+              .attr("class", "line2")
+              .attr("d", line(data2));
+
+        }
+
 
         if (data3) {
 
@@ -327,17 +344,21 @@ function timeSeriesChart() {
                 .attr("d", line(data1));
         }
 
-        if (animate) {
-            path2
-                .transition().duration(250).ease("linear")
-                .attr("d", line(data2));
-        } else {
-            path2
-                .attr("d", line(data2));
-        }
-
         circles1.exit().remove();
-        circles2.exit().remove();
+
+
+        if (data2) {
+            if (animate) {
+                path2
+                  .transition().duration(250).ease("linear")
+                  .attr("d", line(data2));
+            } else {
+                path2
+                  .attr("d", line(data2));
+            }
+            circles2.exit().remove();
+
+        }
 
         if (data3) {
 

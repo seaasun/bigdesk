@@ -22,7 +22,7 @@
 var NodeInfo = Backbone.Model.extend({
 
     url: function() {
-        return '/_nodes/' + this.get("nodeId") + '?human=true';
+        return '/_nodes/' + this.get("nodeId") + '?human';
     },
 
     validate: function(attrs) {

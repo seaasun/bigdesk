@@ -148,25 +148,33 @@ function timeAreaChart() {
         legendSvg.attr("transform","translate("+(margin.left + legend.margin_left)+","+(height -margin.bottom - legendSize.height - legend.margin_bottom)+")");
 
         var legend1 = legendSvg.append("text").text(legend.series1).attr("class","legend_text");
-        var legend2 = legendSvg.append("text").text(legend.series2).attr("class","legend_text");
+
 
         legend1.attr("font-size", 10)
             .attr("font-family", "Verdana")
             .attr("transform","translate("+20+","+(legendSize.height - 5)+")");
 
-        legend2.attr("font-size", 10)
-            .attr("font-family", "Verdana")
-            .attr("transform","translate("+20+","+(legendSize.height - 5 - 14)+")");
 
         legendSvg.append("circle")
             .attr("r", 3)
             .attr("class", "legend_circle_line1")
             .attr("transform","translate("+10+","+(legendSize.height - 8)+")");
 
-        legendSvg.append("circle")
-            .attr("r", 3)
-            .attr("class", "legend_circle_line2")
-            .attr("transform","translate("+10+","+(legendSize.height - 8 - 14)+")");
+        if(legend.series2){
+            var legend2 = legendSvg.append("text").text(legend.series2).attr("class","legend_text");
+
+            legend2.attr("font-size", 10)
+              .attr("font-family", "Verdana")
+              .attr("transform","translate("+20+","+(legendSize.height - 5 - 14)+")");
+
+
+            legendSvg.append("circle")
+              .attr("r", 3)
+              .attr("class", "legend_circle_line2")
+              .attr("transform","translate("+10+","+(legendSize.height - 8 - 14)+")");
+        }
+
+
 
         // caption
         if (legend.caption && legend.caption.length > 0) {
@@ -181,23 +189,27 @@ function timeAreaChart() {
 
     };
 
-    // data1 and data2 are mandatory
-    // data3 is optional
+    // data1 is mandatory
+    // data2 and data3 are optional
     chart.update = function(data1, data2, data3) {
 
         if (!initialized) init();
-
+        value_scale.domain([0,d3.max(data1, function(d){return d.value})]).nice();
+        if (data2 && data2.length > 0) {
+            value_scale.domain([0,d3.max(data2, function(d){return d.value})]).nice();
+        }
         if (data3 && data3.length > 0) {
             // we assume data3 (if present) is always max
             value_scale.domain([0,d3.max(data3, function(d){return d.value})]).nice();
-        } else {
-            value_scale.domain([0,
-                d3.max([
-                    d3.max(data1, function(d){return d.value}),
-                    d3.max(data2, function(d){return d.value})
-                ])
-            ]).nice();
         }
+        // else {
+        //     value_scale.domain([0,
+        //         d3.max([
+        //             d3.max(data1, function(d){return d.value}),
+        //             d3.max(data2, function(d){return d.value})
+        //         ])
+        //     ]).nice();
+        // }
 
         if (data1.length > 2)
             time_scale_axis.domain([
@@ -221,14 +233,15 @@ function timeAreaChart() {
             .attr("class", "line1")
             .attr("d", line(data1));
 
-        area2.data(data2)
-            .attr("class", "area2")
-            .attr("d", area(data2));
+        if (data2 && data2.length > 0) {
+            area2.data(data2)
+                .attr("class", "area2")
+                .attr("d", area(data2));
 
-        path2.data(data2)
-            .attr("class", "line2")
-            .attr("d", line(data2));
-
+            path2.data(data2)
+                .attr("class", "line2")
+                .attr("d", line(data2));
+        }
         if (data3 && data3.length > 0) {
             area3.data(data3)
                 .attr("class", "area3")
@@ -256,6 +269,9 @@ function timeAreaChart() {
             t.select(".y.axis").call(yAxis);
 
             t.select(".area1").attr("d", area(data1));
+            if (data2 && data2.length > 0) {
+                t.select(".area2").attr("d", area(data2));
+            }
             t.select(".area2").attr("d", area(data2));
             if (data3 && data3.length > 0) {
                 t.select(".area3").attr("d", area(data3));
@@ -275,13 +291,15 @@ function timeAreaChart() {
                 .attr("d", line(data1));
         }
 
-        if (animate) {
-            path2
-              .transition().duration(250).ease("linear")
-                .attr("d", line(data2));
-        } else {
-            path2
-                .attr("d", line(data2));
+        if (data2 && data2.length > 0) {
+            if (animate) {
+                path2
+                  .transition().duration(250).ease("linear")
+                  .attr("d", line(data2));
+            } else {
+                path2
+                  .attr("d", line(data2));
+            }
         }
 
         if (data3 && data3.length > 0) {

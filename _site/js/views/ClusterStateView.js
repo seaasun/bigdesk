@@ -64,7 +64,6 @@ var ClusterStateView = Backbone.View.extend({
         var clusterState = _view.model.get("clusterState");
 
         if (clusterState && clusterState.length > 0) {
-
             var theLatest = clusterState.at(clusterState.length-1);
 //            console.log(theLatest.toJSON());
             if (theLatest) {
@@ -168,7 +167,10 @@ var ClusterStateView = Backbone.View.extend({
     getIndexShardSize: function(theLatestIndicesStatus, indexName, shard, nodeId) {
         if (theLatestIndicesStatus) {
             var indices = theLatestIndicesStatus.get("indices");
-            var _shards = indices[indexName].shards[shard];
+
+            // TODO @seaasun 这里没有shard——id了
+            var _shards = indices[indexName].shards;
+            //var _shards = indices[indexName].shards[shard];
             for (var _shard in _shards) {
                 if (_shards[_shard].routing.node == nodeId) {
                     return _shards[_shard].index.size_in_bytes;

@@ -132,21 +132,21 @@ var templates = {
 		].join(""),
 
         fileDescriptorsTemplate: [
-            "<div>Max: {{process.max_file_descriptors}}</div>",
+            "<div>Max:  <span id='max_file_descriptors'>n/a</span></div>",
             "<div>Open: <span id='open_file_descriptors'>n/a</span></div>"
 //        "<div>Refresh interval: {{process.refresh_interval}}ms</div>"
         ].join(""),
 
         process_MemTemplate: [
             "<div>Total virtual: <span id='process_mem_total_virtual'>n/a</span></div>",
-            "<div>Resident: <span id='process_mem_resident'>n/a</span></div>",
-            "<div>Share: <span id='process_mem_share'>n/a</span></div>"
+            // "<div>Resident: <span id='process_mem_resident'>n/a</span></div>",
+            // "<div>Share: <span id='process_mem_share'>n/a</span></div>"
         ].join(""),
 
         process_CPU_timeTemplate: [
             "<!--#-->",
-            "<div>Sys total: <span id='process_cpu_time_sys'>n/a</span></div>",
-            "<div>User total: <span id='process_cpu_time_user'>n/a</span></div>"
+            "<div>Used: <span id='process_cpu_time_sys'>n/a</span></div>",
+            // "<div>User total: <span id='process_cpu_time_user'>n/a</span></div>"
         ].join(""),
 
         process_CPU_pctTemplate: [
@@ -156,8 +156,7 @@ var templates = {
 
         osCpu: [
             "<div>Total: 100%</div>",
-            "<div>User: <span id='os_cpu_user'>n/a</span></div>",
-            "<div>Sys: <span id='os_cpu_sys'>n/a</span></div>"
+            "<div>Used: <span id='os_cpu'>n/a</span></div>"
         ].join(""),
 
         osMem: [
@@ -171,9 +170,10 @@ var templates = {
         ].join(""),
 
         osLoad: [
-            "<div>2: <span id='os_load_2'>n/a</span></div>",
-            "<div>1: <span id='os_load_1'>n/a</span></div>",
-            "<div>0: <span id='os_load_0'>n/a</span></div>"
+            // "<div>2: <span id='os_load_2'>n/a</span></div>",
+            // "<div>1: <span id='os_load_1'>n/a</span></div>",
+            // "<div>0: <span id='os_load_0'>n/a</span></div>"
+            "<div>Used: <span id='os_load'>n/a</span></div>"
         ].join(""),
 
         channelsTemplate: [
@@ -207,18 +207,24 @@ var templates = {
         ].join("<br>"),
 
         osInfoTemplate1: [
-            "CPU vendor: {{#cpu.vendor}}{{cpu.vendor}}{{/cpu.vendor}}{{^cpu.vendor}}n/a{{/cpu.vendor}}",
-            "CPU model: {{#cpu.model}}{{cpu.model}} ({{cpu.mhz}} MHz){{/cpu.model}}{{^cpu.model}}n/a{{/cpu.model}}",
-            "CPU total logical cores: {{#cpu.total_cores}}{{cpu.total_cores}}{{/cpu.total_cores}}{{^cpu.total_cores}}n/a{{/cpu.total_cores}}",
+            // TODO@seaasun 这里少好多东西
+           "OS name: {{name}}",
+           "OS version: {{version}}",
+           "OS arch: {{arch}}",
+           "Available processors: {{allocated_processors}}",
+           ""
+            // "CPU vendor: {{#cpu.vendor}}{{cpu.vendor}}{{/cpu.vendor}}{{^cpu.vendor}}n/a{{/cpu.vendor}}",
+            // "CPU model: {{#cpu.model}}{{cpu.model}} ({{cpu.mhz}} MHz){{/cpu.model}}{{^cpu.model}}n/a{{/cpu.model}}",
+            // "CPU total logical cores: {{#cpu.total_cores}}{{cpu.total_cores}}{{/cpu.total_cores}}{{^cpu.total_cores}}n/a{{/cpu.total_cores}}",
 //            "CPU sockets: {{cpu.total_sockets}} with {{cpu.cores_per_socket}} cores each", // seems like there is a sigar bug?
-            "CPU cache: {{#cpu.cache_size}}{{cpu.cache_size}}{{/cpu.cache_size}}{{^cpu.cache_size}}n/a{{/cpu.cache_size}}"
+            // "CPU cache: {{#cpu.cache_size}}{{cpu.cache_size}}{{/cpu.cache_size}}{{^cpu.cache_size}}n/a{{/cpu.cache_size}}"
         ].join("<br>"),
 
         osInfoTemplate2: [
-            "Uptime: <span id='os_uptime'>n/a</span>",
+           // "Uptime: <span id='os_uptime'>n/a</span>",
             "Refresh interval: {{refresh_interval}}ms",
-            "Total mem: {{#mem.total}}{{mem.total}} ({{mem.total_in_bytes}}&nbsp;b){{/mem.total}}{{^mem.total}}n/a{{/mem.total}}",
-            "Total swap: {{#swap.total}}{{swap.total}} ({{swap.total_in_bytes}}&nbsp;b){{/swap.total}}{{^swap.total}}n/a{{/swap.total}}"
+            //"Total mem: {{#mem.total}}{{mem.total}} ({{mem.total_in_bytes}}&nbsp;b){{/mem.total}}{{^mem.total}}n/a{{/mem.total}}",
+            //"Total swap: {{#swap.total}}{{swap.total}} ({{swap.total_in_bytes}}&nbsp;b){{/swap.total}}{{^swap.total}}n/a{{/swap.total}}"
         ].join("<br>"),
 
         indices1Template1: [
@@ -259,13 +265,13 @@ var templates = {
         ].join("<br>"),
 
         indicesCacheSizeTemplate: [
-            "ID: <span id='indices_id_cache_size'>n/a</span>",
-            "Filter: <span id='indices_filter_cache_size'>n/a</span>",
+            "Request: <span id='indices_id_cache_size'>n/a</span>",
+            "Query: <span id='indices_filter_cache_size'>n/a</span>",
             "Field: <span id='indices_field_cache_size'>n/a</span>"
         ].join("<br>"),
 
         indicesCacheEvictionsTemplate: [
-            "Filter: <span id='indices_filter_cache_evictions'>n/a</span>",
+            "Query: <span id='indices_query_cache_evictions'>n/a</span>",
             "Field: <span id='indices_field_cache_evictions'>n/a</span>"
         ].join("<br>"),
 
@@ -280,7 +286,9 @@ var templates = {
         ].join("<br>"),
 
         fsDataInfoTemplate: [
-            "<div>Device: {{#dev}}<span class='pre'>{{dev}}</span>{{/dev}}{{^dev}}n/a{{/dev}}</div>",
+            //todo @seaasun
+            //"<div>Device: {{#dev}}<span class='pre'>{{dev}}</span>{{/dev}}{{^dev}}n/a{{/dev}}</div>",
+            "<div>type: {{#type}}<span class='pre'>{{type}}</span>{{/type}}{{^type}}n/a{{/type}}</div>",
             "<div>Mount: {{#mount}}<span class='pre'>{{mount}}</span>{{/mount}}{{^mount}}n/a{{/mount}}</div>",
             "<div>Path: <span class='pre'>{{path}}</span></div>",
             "<div>Free: <span id='fs_disk_free_{{key}}'>{{free}}</span></div>",
@@ -289,14 +297,14 @@ var templates = {
         ].join(""),
 
         fsDataInfo_cntTemplate: [
-            "<div>Writes: <span id='fs_disk_writes_{{key}}'>n/a</span></div>",
-            "<div>Reads: <span id='fs_disk_reads_{{key}}'>n/a</span></div>"
+            "<div>Total: <span id='fs_disk_writes_{{key}}'>n/a</span></div>",
+            "<div>Available: <span id='fs_disk_reads_{{key}}'>n/a</span></div>"
         ].join(""),
 
-        fsDataInfo_sizeTemplate: [
-            "<div>Write: <span id='fs_disk_write_size_{{key}}'>n/a</span></div>",
-            "<div>Read: <span id='fs_disk_read_size_{{key}}'>n/a</span></div>"
-        ].join("")
+         fsDataInfo_sizeTemplate: [
+        //     "<div>Write: <span id='fs_disk_write_size_{{key}}'>n/a</span></div>",
+        //     "<div>Read: <span id='fs_disk_read_size_{{key}}'>n/a</span></div>"
+         ].join("")
 
     }
 
