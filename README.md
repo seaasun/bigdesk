@@ -9,7 +9,7 @@ this project fork from https://github.com/lukas-vlcek/bigdesk
 install:
   `./bin/plugin install seaasun/bigdesk`
 
-As some api of elasticsearch changed , some talbes of bigdesk are changed also
+As some api of elasticsearch changed , some tables of bigdesk are changed also
 
 <table>
   <tr>
