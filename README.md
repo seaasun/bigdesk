@@ -1,6 +1,62 @@
-# Bigdesk
+# Bigdesk (for 2x)
 
 Live charts and statistics for Elasticsearch cluster.
+## Notice
+this is bigdesk for Elasticsearch 2x
+this project fork from https://github.com/lukas-vlcek/bigdesk
+
+install:
+  `./bin/plugin install seaasun/bigdesk`
+
+As some api of elasticsearch changed , some talbes of bigdesk are changed
+
+<table>
+  <tr>
+     <th> item </th>
+     <th> change </th>
+  </tr>  
+  <tr>
+     <td> JVM </td>
+     <td> no changes </td>
+  <tr>  
+  <tr>
+     <td> Thread Pools </td>
+     <td> no changes </td>
+  <tr>  
+  <tr>
+     <td> JVM </td>
+     <td> no changes </td>
+  <tr>  
+  <tr>
+     <td> OS </td>
+     <td> CPU (%), Load Average </td>
+  <tr>  
+  <tr>
+     <td> Process </td>
+     <td> File Descriptors, Mem, CPU time (Δ),CPU (%) </td>
+  <tr>  
+  <tr>
+     <td> HTTP & Transport </td>
+     <td> no changes </td>
+  <tr>  
+  <tr>
+     <td> Indices </td>
+     <td> cancel filter </td>
+  <tr>  
+  <tr>
+     <td> Indices </td>
+     <td> no changes </td>
+  <tr>  
+  <tr>
+     <td> File system </td>
+     <td> all changed </td>
+  <tr>  
+  <tr>
+     <td> Cluster </td>
+     <td> no changes </td>
+  <tr>  
+</table>
+
 
 ## Contents
 
