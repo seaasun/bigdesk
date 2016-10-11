@@ -2,7 +2,7 @@
 
 Live charts and statistics for Elasticsearch cluster.
 ## Notice
-<font color=#0099ff > this is bigdesk for Elasticsearch 2x </font>
+<em> this is bigdesk for Elasticsearch 2x </em>
 
 this project fork from https://github.com/lukas-vlcek/bigdesk
 
