@@ -2,13 +2,14 @@
 
 Live charts and statistics for Elasticsearch cluster.
 ## Notice
-this is bigdesk for Elasticsearch 2x
+<span style="color:yellow" > this is bigdesk for Elasticsearch 2x </span>
+
 this project fork from https://github.com/lukas-vlcek/bigdesk
 
 install:
   `./bin/plugin install seaasun/bigdesk`
 
-As some api of elasticsearch changed , some talbes of bigdesk are changed
+As some api of elasticsearch changed , some talbes of bigdesk are changed also
 
 <table>
   <tr>
