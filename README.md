@@ -2,7 +2,7 @@
 
 Live charts and statistics for Elasticsearch cluster.
 ## Notice
-<em> this is bigdesk for Elasticsearch 2x </em>
+<strong> this is bigdesk for Elasticsearch 2x </strong>
 
 this project fork from https://github.com/lukas-vlcek/bigdesk
 
@@ -19,43 +19,43 @@ As some api of elasticsearch changed , some talbes of bigdesk are changed also
   <tr>
      <td> JVM </td>
      <td> no changes </td>
-  <tr>  
+  </tr>  
   <tr>
      <td> Thread Pools </td>
      <td> no changes </td>
-  <tr>  
+  </tr>  
   <tr>
      <td> JVM </td>
      <td> no changes </td>
-  <tr>  
+  </tr>  
   <tr>
      <td> OS </td>
      <td> CPU (%), Load Average </td>
-  <tr>  
+  </tr>  
   <tr>
      <td> Process </td>
      <td> File Descriptors, Mem, CPU time (Δ),CPU (%) </td>
-  <tr>  
+  </tr>  
   <tr>
      <td> HTTP & Transport </td>
      <td> no changes </td>
-  <tr>  
+  </tr>  
   <tr>
      <td> Indices </td>
      <td> cancel filter </td>
-  <tr>  
+  </tr>  
   <tr>
      <td> Indices </td>
      <td> no changes </td>
-  <tr>  
+  </tr>  
   <tr>
      <td> File system </td>
      <td> all changed </td>
-  <tr>  
+  </tr>  
   <tr>
      <td> Cluster </td>
      <td> no changes </td>
-  <tr>  
+  </tr>  
 </table>
 
 
