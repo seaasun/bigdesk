@@ -13,20 +13,20 @@ As some api of elasticsearch changed , some tables of bigdesk are changed also
 
 <table>
   <tr>
-     <th> item </th>
-     <th> change </th>
+     <th> Item </th>
+     <th> Change </th>
   </tr>  
   <tr>
      <td> JVM </td>
-     <td> no changes </td>
+     <td> No changes </td>
   </tr>  
   <tr>
      <td> Thread Pools </td>
-     <td> no changes </td>
+     <td> No changes </td>
   </tr>  
   <tr>
      <td> JVM </td>
-     <td> no changes </td>
+     <td> No changes </td>
   </tr>  
   <tr>
      <td> OS </td>
@@ -38,23 +38,23 @@ As some api of elasticsearch changed , some tables of bigdesk are changed also
   </tr>  
   <tr>
      <td> HTTP & Transport </td>
-     <td> no changes </td>
+     <td> No changes </td>
   </tr>  
   <tr>
      <td> Indices </td>
-     <td> cancel filter </td>
+     <td> Cancel filter </td>
   </tr>  
   <tr>
      <td> Indices </td>
-     <td> no changes </td>
+     <td> No changes </td>
   </tr>  
   <tr>
      <td> File system </td>
-     <td> all changed </td>
+     <td> All changed </td>
   </tr>  
   <tr>
      <td> Cluster </td>
-     <td> no changes </td>
+     <td> No changes </td>
   </tr>  
 </table>
 
